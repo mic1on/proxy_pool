@@ -22,6 +22,11 @@ rules = [
         "list": "//table[@id='GridViewOrder']//tr[position()>1]",
         "ip": "./td[1]/text()",
         "port": "./td[2]/text()"
+    },
+    {
+        "url": "http://www.nimadaili.com/",
+        "list": "//table//tr[position()>1 and position()<last()]",
+        "ip": "./td[1]/text()"
     }
 ]
 
@@ -32,5 +37,8 @@ def auto_fetcher():
         item_list = html_tree.xpath(rule.get('list'))
         for item in item_list:
             ip = ''.join(item.xpath(rule.get('ip')))
-            port = ''.join(item.xpath(rule.get('port')))
-            yield '%s:%s' % (ip, port)
+            if rule.get('port') is None:
+                yield '%s' % ip
+            else:
+                port = ''.join(item.xpath(rule.get('port')))
+                yield '%s:%s' % (ip, port)
