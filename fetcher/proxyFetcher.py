@@ -15,6 +15,7 @@ __author__ = 'JHao'
 import re
 from time import sleep
 
+from fetcher.autoFetcher import auto_fetcher
 from util.webRequest import WebRequest
 
 
@@ -22,6 +23,9 @@ class ProxyFetcher(object):
     """
     proxy getter
     """
+    @staticmethod
+    def autoProxy():
+        return auto_fetcher()
 
     @staticmethod
     def freeProxy01():
@@ -250,8 +254,17 @@ class ProxyFetcher(object):
             for ip in ips:
                 yield ip.strip()
 
+    @staticmethod
+    def freeProxy15():
+        url = 'http://http.zhiliandaili.cn/'
+        tree = WebRequest().get(url, timeout=10).tree
+        proxy_list = tree.xpath('.//table[@class="lineTable w1200"]//tr')
+        for tr in proxy_list[1:]:
+            yield ':'.join(tr.xpath('./th/text()')[0:2])
+
 
 if __name__ == '__main__':
     p = ProxyFetcher()
-    for _ in p.freeProxy13():
+    # p.freeProxy15()
+    for _ in p.freeProxy15():
         print(_)
